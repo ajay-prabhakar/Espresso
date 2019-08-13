@@ -55,7 +55,6 @@ public class MenuActivityScreenTest {
         // Checks that the OrderActivity opens with the correct tea name displayed
         onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
 
-
     }
 
 }
