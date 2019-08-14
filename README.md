@@ -13,3 +13,13 @@ Remember that if idle is false there are pending operations in the background an
 Implementing the IdlingResource interface is straight forward: it requires completing the 3 required methods. We also created an instance of AtomicBoolean in order to control idleness across multiple threads.
 
 We also declare a private variable called mIdlingResource of type SimpleIdlingResource. Notice that it has an annotation @Nullable which indicates that this variable will be null in production. This is because this setup with IdlingResource is only used for testing, so when the project is run in production, IdlingResource can be null.
+
+#### Summary
+
+When the changeTextBt is clicked, onClick() in MainActivity triggers MessageDelayer.processMessage().
+
+processMessage() sets the IdlingResource to false, then creates a Handler which contains a Runnable that will be run after a pre-determined time delay, DELAY_MILLIS. The Runnable that will be executed after the delay:
+
+1) Returns the String entered by the user via a callback to the calling activity (e.g. MainActivity)
+
+2) Sets the IdlingResource to true
