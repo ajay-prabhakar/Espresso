@@ -23,3 +23,16 @@ processMessage() sets the IdlingResource to false, then creates a Handler which 
 1) Returns the String entered by the user via a callback to the calling activity (e.g. MainActivity)
 
 2) Sets the IdlingResource to true
+
+[class](https://classroom.udacity.com/courses/ud855/lessons/f0084cc7-2cbc-4b8e-8644-375e8c927167/concepts/1449718b-df48-4789-a152-4e52f0093006)
+
+<img width="437" alt="screen-shot-2017-03-09-at-2 27 40-pm" src="https://user-images.githubusercontent.com/48018942/63033351-1c159a00-bed5-11e9-9a4d-e9bfb457b314.png">
+
+Implement the IdlingResource interface (SimpleIdlingResource.java)
+
+Create a callback interface (MessageDelayer.java) where the actual asynchronous task will occur
+
+Set the state of IdlingResource to false when the task is running, and then back to true when the task is done
+
+Have the delayer notify the activity that the process is complete via a callback (MainActivity.onDone)
+
