@@ -2,7 +2,110 @@
 
 This is a exercise repository for the TeaTime example app which is part of Udacity's Advanced Android course. TeaTime is a mock tea ordering app that demonstrates various uses of the Espresso Testing framework (i.e. Views, AdapterViews, Intents, IdlingResources). You can learn more about how to use this repository [here](https://classroom.udacity.com/courses/ud857/lessons/8b2a9d63-0ff5-48ff-90d3-a9855b701dae/concepts/41b82e3c-2797-46e5-8a66-684098ca8cbb)
 
-## Some Important Links:
+**Android has mainly two types of tests**
+
+##### Unit Tests
+
+Testing every method/function (or unit) of your code for e.g: given a function, calling it with param x should return y. These tests are run on JVM locally without the need of an emulator or Device.
+
+##### Instrumentation Testing
+
+Instrumentation tests are used for testing Android Frameworks such as UI,SharedPreferences and So on.Since they are for Android Framework they are run on a device or an emulator.
+Instrumentation tests use a separate apk for the purpose of testing. Thus, every time a test case is run, Android Studio will first install the target apk on which the tests are conducted. After that, Android Studio will install the test apk which contains only test related code.
+
+**What is Espresso?**
+
+Espresso is an instrumentation Testing framework made available by Google for the ease of UI Testing.
+
+##### Setting Up
+Go to your app/build.gradle
+
+1.Add dependencies
+```
+androidTestCompile ‘com.android.support.test.espresso:espresso-core:3.0.1’
+androidTestCompile ‘com.android.support.test:runner:1.0.1’
+```
+2.Add to the same build.gradle file the following line in
+
+```
+android.defaultConfig{
+testInstrumentationRunner “android.support.test.runner.AndroidJUnitRunner”
+}
+```
+
+This sets up the Android Instrumentation Runner in our app.
+
+**AndroidJUnitRunner** is the instrumentation runner. This is essentially the entry point into running your entire suite of tests. It controls the test environment, the test apk, and launches all of the tests defined in your test package
+
+And annotate it with `@RunWith(AndroidJUnit4::class)`
+
+The instrumentation runner will process each test class and inspect its annotations. It will determine which class runner is set with @RunWith, initialize it, and use it to run the tests in that class. In Android’s case, the AndroidJUnitRunner explicitly checks if the AndroidJUnit4 class runner is set to allow passing configuration parameters to it.
+
+**Important things to note is that**
+The activity will be launched using the `@Rule` before test code begins
+
+By default the rule will be initialised and the activity will be launched(onCreate, onStart, onResume) before running every `@Before` method
+
+Activity will be Destroyed(onPause, onStop, onDestroy) after running the `@After` method which in turn is called after every `@Test` Method
+
+The activity’s launch can be postponed by setting the launchActivity to false in the constructor of ActivityTestRule ,in that case you will have to manually launch the activity before the tests
+
+### Example Code
+In the example below we do the testing of a login screen where we search the login and password edit text and enter the values and after that we test the two scenarios Login success and Login Failure
+
+```
+import android.support.test.rule.ActivityTestRule
+import android.support.test.runner.AndroidJUnit4
+import org.junit.runner.RunWith
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.action.ViewActions
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.*
+
+@RunWith(AndroidJUnit4::class)
+class MainActivityInstrumentationTest {
+
+    @Rule
+    @JvmField
+    public val rule  = ActivityTestRule(MainActivity::class.java)
+
+    private val username_tobe_typed="Chromicle"
+    private val correct_password ="password"
+    private val wrong_password = "passme123"
+
+    @Test
+    fun login_success(){
+        Log.e("@Test","Performing login success test")
+        Espresso.onView((withId(R.id.user_name)))
+                .perform(ViewActions.typeText(username_tobe_typed))
+
+        Espresso.onView(withId(R.id.password))
+                .perform(ViewActions.typeText(correct_password))
+
+        Espresso.onView(withId(R.id.login_button))
+                .perform(ViewActions.click())
+
+        Espresso.onView(withId(R.id.login_result))
+                .check(matches(withText(R.string.login_success)))
+    }
+
+    @Test
+    fun login_failure(){
+        Log.e("@Test","Performing login failure test")
+        Espresso.onView((withId(R.id.user_name)))
+                .perform(ViewActions.typeText(username_tobe_typed))
+
+        Espresso.onView(withId(R.id.password))
+                .perform(ViewActions.typeText(wrong_password))
+
+        Espresso.onView(withId(R.id.login_button))
+                .perform(ViewActions.click())
+
+        Espresso.onView(withId(R.id.login_result))
+                .check(matches(withText(R.string.login_failed)))
+    }
+}
+```
 
 ## Idling Resource
 
